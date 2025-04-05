@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { FC } from "react";
 import { LightbulbIcon, FileSpreadsheetIcon, EyeClosedIcon, EyeClosed, MoonIcon, SunIcon } from "lucide-react";
 import { ThemeMode } from "@/lib/types";
+import EthiopianFlag from "./EthiopianFlag";
 
 interface HeaderProps {
   isFormVisible: boolean;
@@ -20,10 +21,12 @@ const Header: FC<HeaderProps> = ({
 }) => {
   return (
     <header className="bg-[#2c3e50] px-6 py-4 flex justify-between items-center shadow-md">
-      <h1 className="text-white text-xl font-semibold">Ethiopian Construction Authority</h1>
+      <h1 className="text-white text-xl font-semibold flex items-center">
+        <EthiopianFlag /> Ethiopian Construction Authority
+      </h1>
       <div className="flex space-x-2">
         <Button
-          variant="primary"
+          variant="default"
           onClick={onToggleForm}
           className="bg-[#3498db] hover:bg-[#2980b9] text-white"
         >
@@ -39,7 +42,7 @@ const Header: FC<HeaderProps> = ({
         </Button>
         
         <Button
-          variant="primary"
+          variant="default"
           onClick={onExportCsv}
           className="bg-[#3498db] hover:bg-[#2980b9] text-white"
         >

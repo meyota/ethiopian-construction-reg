@@ -101,28 +101,39 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
         <Table>
           <TableHeader className="bg-gray-50 dark:bg-gray-700">
             <TableRow>
-              <TableHead>Actions</TableHead>
+              <TableHead>Roll No.</TableHead>
               <TableHead>Tracking Number</TableHead>
               <TableHead>Full Name</TableHead>
               <TableHead>Gender</TableHead>
-              <TableHead>Date of Registration</TableHead>
               <TableHead>Phone Number</TableHead>
               <TableHead>Professional Title</TableHead>
               <TableHead>Professional Number</TableHead>
               <TableHead>Sector</TableHead>
               <TableHead>Service Type</TableHead>
+              <TableHead>Date of Registration</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {professionals.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center py-4">
+                <TableCell colSpan={11} className="text-center py-4">
                   No professionals found. Add some using the form above.
                 </TableCell>
               </TableRow>
             ) : (
-              professionals.map((professional) => (
+              professionals.map((professional, index) => (
                 <TableRow key={professional.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{professional.trackingNumber}</TableCell>
+                  <TableCell>{professional.fullName}</TableCell>
+                  <TableCell>{professional.gender}</TableCell>
+                  <TableCell>{professional.phoneNumber}</TableCell>
+                  <TableCell>{professional.professionalTitle}</TableCell>
+                  <TableCell>{professional.professionalNumber}</TableCell>
+                  <TableCell>{professional.sector}</TableCell>
+                  <TableCell>{professional.serviceType}</TableCell>
+                  <TableCell>{professional.dateOfRegistration}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-700">
@@ -133,15 +144,6 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
                       </Button>
                     </div>
                   </TableCell>
-                  <TableCell>{professional.trackingNumber}</TableCell>
-                  <TableCell>{professional.fullName}</TableCell>
-                  <TableCell>{professional.gender}</TableCell>
-                  <TableCell>{professional.dateOfRegistration}</TableCell>
-                  <TableCell>{professional.phoneNumber}</TableCell>
-                  <TableCell>{professional.professionalTitle}</TableCell>
-                  <TableCell>{professional.professionalNumber}</TableCell>
-                  <TableCell>{professional.sector}</TableCell>
-                  <TableCell>{professional.serviceType}</TableCell>
                 </TableRow>
               ))
             )}

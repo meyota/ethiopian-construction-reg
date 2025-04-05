@@ -212,10 +212,8 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="construction">Construction</SelectItem>
-                    <SelectItem value="civil">Civil Engineering</SelectItem>
-                    <SelectItem value="architectural">Architectural</SelectItem>
-                    <SelectItem value="mechanical">Mechanical</SelectItem>
-                    <SelectItem value="electrical">Electrical</SelectItem>
+                    <SelectItem value="civil">Water</SelectItem>
+                    
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -239,7 +237,9 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
                     <SelectItem value="New">New</SelectItem>
                     <SelectItem value="Renewal">Renewal</SelectItem>
                     <SelectItem value="Upgrade">Upgrade</SelectItem>
-                    <SelectItem value="Transfer">Transfer</SelectItem>
+                    <SelectItem value="Transfer">Practicing</SelectItem>
+                    <SelectItem value="Transfer">Lostr</SelectItem>
+                    <SelectItem value="Transfer">Replacement</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
