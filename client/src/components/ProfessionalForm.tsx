@@ -177,7 +177,7 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
               <FormItem>
                 <FormLabel>Professional Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Civil Engineer" {...field} />
+                  <Input placeholder="Graduate Engineer" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -191,7 +191,7 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
               <FormItem>
                 <FormLabel>Professional Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="CE-2023-4567" {...field} />
+                  <Input placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
