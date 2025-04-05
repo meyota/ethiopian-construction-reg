@@ -1,4 +1,9 @@
 import { users, type User, type InsertUser, professionals, type Professional, type InsertProfessional } from "@shared/schema";
+import { db } from "./db";
+import { eq, like, or } from "drizzle-orm";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
 
 // Modify the interface with CRUD methods for professionals
 export interface IStorage {
@@ -13,42 +18,42 @@ export interface IStorage {
   createProfessional(professional: InsertProfessional): Promise<Professional>;
   updateProfessional(id: number, professional: Partial<InsertProfessional>): Promise<Professional | undefined>;
   deleteProfessional(id: number): Promise<boolean>;
+  
+  // Session store for authentication
+  sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private professionals: Map<number, Professional>;
-  private userCurrentId: number;
-  private professionalCurrentId: number;
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
 
   constructor() {
-    this.users = new Map();
-    this.professionals = new Map();
-    this.userCurrentId = 1;
-    this.professionalCurrentId = 1;
+    const PostgresSessionStore = connectPg(session);
+    this.sessionStore = new PostgresSessionStore({ 
+      pool, 
+      createTableIfMissing: true,
+      tableName: 'user_sessions'
+    });
   }
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userCurrentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   // Professional methods
   async getProfessionals(): Promise<Professional[]> {
-    return Array.from(this.professionals.values());
+    return db.select().from(professionals);
   }
 
   async searchProfessionals(searchTerm: string): Promise<Professional[]> {
@@ -56,35 +61,39 @@ export class MemStorage implements IStorage {
       return this.getProfessionals();
     }
     
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return Array.from(this.professionals.values()).filter(
-      (professional) => 
-        professional.fullName.toLowerCase().includes(lowerSearchTerm) || 
-        professional.phoneNumber.toLowerCase().includes(lowerSearchTerm)
-    );
+    return db.select()
+      .from(professionals)
+      .where(
+        or(
+          like(professionals.fullName, `%${searchTerm}%`),
+          like(professionals.phoneNumber, `%${searchTerm}%`)
+        )
+      );
   }
 
   async createProfessional(insertProfessional: InsertProfessional): Promise<Professional> {
-    const id = this.professionalCurrentId++;
-    const professional: Professional = { ...insertProfessional, id };
-    this.professionals.set(id, professional);
+    const [professional] = await db.insert(professionals).values(insertProfessional).returning();
     return professional;
   }
 
   async updateProfessional(id: number, updateData: Partial<InsertProfessional>): Promise<Professional | undefined> {
-    const professional = this.professionals.get(id);
-    if (!professional) {
-      return undefined;
-    }
-
-    const updatedProfessional: Professional = { ...professional, ...updateData };
-    this.professionals.set(id, updatedProfessional);
-    return updatedProfessional;
+    const [professional] = await db
+      .update(professionals)
+      .set(updateData)
+      .where(eq(professionals.id, id))
+      .returning();
+    
+    return professional;
   }
 
   async deleteProfessional(id: number): Promise<boolean> {
-    return this.professionals.delete(id);
+    const result = await db
+      .delete(professionals)
+      .where(eq(professionals.id, id))
+      .returning();
+    
+    return result.length > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

@@ -1,10 +1,14 @@
-const EthiopianFlag = () => {
+interface EthiopianFlagProps {
+  className?: string;
+}
+
+const EthiopianFlag = ({ className = "inline-block mr-2" }: EthiopianFlagProps) => {
   return (
     <svg 
       width="24" 
       height="16" 
       viewBox="0 0 30 20" 
-      className="inline-block mr-2"
+      className={className}
     >
       {/* Green stripe */}
       <rect width="30" height="6.66" fill="#078930" />

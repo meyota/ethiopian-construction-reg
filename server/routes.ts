@@ -1,14 +1,34 @@
-import express, { type Express } from "express";
+import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertProfessionalSchema, professionalSearchSchema } from "@shared/schema";
+import { setupAuth } from "./auth";
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ message: "Not authenticated" });
+};
+
+// Middleware to check if user is staff
+const isStaff = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated() && req.user && req.user.isStaff) {
+    return next();
+  }
+  return res.status(403).json({ message: "Access denied. Staff role required." });
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
+  
   const apiRouter = express.Router();
 
   // Get all professionals or search by term
-  apiRouter.get("/professionals", async (req, res) => {
+  apiRouter.get("/professionals", isAuthenticated, async (req, res) => {
     try {
       const { searchTerm } = professionalSearchSchema.parse(req.query);
       
@@ -27,8 +47,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new professional
-  apiRouter.post("/professionals", async (req, res) => {
+  // Create a new professional - requires staff role
+  apiRouter.post("/professionals", isStaff, async (req, res) => {
     try {
       const professionalData = insertProfessionalSchema.parse(req.body);
       const professional = await storage.createProfessional(professionalData);
@@ -41,8 +61,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update an existing professional
-  apiRouter.patch("/professionals/:id", async (req, res) => {
+  // Update an existing professional - requires staff role
+  apiRouter.patch("/professionals/:id", isStaff, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -62,8 +82,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a professional
-  apiRouter.delete("/professionals/:id", async (req, res) => {
+  // Delete a professional - requires staff role
+  apiRouter.delete("/professionals/:id", isStaff, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {

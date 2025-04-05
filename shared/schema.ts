@@ -1,17 +1,21 @@
-import { pgTable, text, serial, date } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, date, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Original users table - keeping for reference
+// Users table with role flag
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  fullName: text("full_name").notNull(),
+  isStaff: boolean("is_staff").notNull().default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  fullName: true,
+  isStaff: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

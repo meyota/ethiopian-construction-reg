@@ -4,9 +4,14 @@ import ProfessionalForm from "@/components/ProfessionalForm";
 import ProfessionalTable from "@/components/ProfessionalTable";
 import { Professional, ThemeMode } from "@/lib/types";
 import { exportToCsv } from "@/lib/csvExport";
+import { useAuth } from "@/hooks/use-auth";
 
 const Home: FC = () => {
-  const [isFormVisible, setIsFormVisible] = useState(true);
+  const { user } = useAuth();
+  const isStaff = user?.isStaff || false;
+  
+  // Only show form by default for staff users
+  const [isFormVisible, setIsFormVisible] = useState(isStaff);
   const [theme, setTheme] = useState<ThemeMode>('light');
 
   const toggleForm = () => {
@@ -33,7 +38,9 @@ const Home: FC = () => {
       />
       
       <main className="container mx-auto p-6 space-y-6">
-        <ProfessionalForm isVisible={isFormVisible} />
+        {/* Only staff users can see and use the form */}
+        {isStaff && <ProfessionalForm isVisible={isFormVisible} />}
+        
         <ProfessionalTable onExportData={handleExportCsv} />
       </main>
     </div>
