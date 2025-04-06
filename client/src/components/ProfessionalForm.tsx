@@ -237,9 +237,9 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
                     <SelectItem value="New">New</SelectItem>
                     <SelectItem value="Renewal">Renewal</SelectItem>
                     <SelectItem value="Upgrade">Upgrade</SelectItem>
-                    <SelectItem value="Transfer">Practicing</SelectItem>
-                    <SelectItem value="Transfer">Lostr</SelectItem>
-                    <SelectItem value="Transfer">Replacement</SelectItem>
+                    <SelectItem value="Practicing">Practicing</SelectItem>
+                    <SelectItem value="Lost">Lost</SelectItem>
+                    <SelectItem value="Replacement">Replacement</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
