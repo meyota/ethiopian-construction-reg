@@ -110,6 +110,13 @@ const Home: FC = () => {
     updateProfessionalMutation.mutate(updatedProfessional);
   };
 
+  // Create a state for professionals data to export
+  const [professionalsToExport, setProfessionalsToExport] = useState<Professional[]>([]);
+  
+  const handleProfessionalsData = (data: Professional[]) => {
+    setProfessionalsToExport(data);
+  };
+  
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''}`}>
       <Header
@@ -117,14 +124,14 @@ const Home: FC = () => {
         theme={theme}
         onToggleForm={toggleForm}
         onToggleTheme={toggleTheme}
-        onExportCsv={() => handleExportCsv([])} // This will be filled by ProfessionalTable
+        onExportCsv={() => handleExportCsv(professionalsToExport)}
       />
       
       <main className="container mx-auto p-6 space-y-6">
         {/* Only staff users can see and use the form */}
         {isStaff && <ProfessionalForm isVisible={isFormVisible} />}
         
-        <ProfessionalTable onExportData={handleExportCsv} onEdit={handleEdit} />
+        <ProfessionalTable onExportData={handleProfessionalsData} onEdit={handleEdit} />
         
         {/* Edit Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>

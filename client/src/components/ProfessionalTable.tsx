@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Search, Edit, Trash2 } from "lucide-react";
+import { Search, Edit, Trash2, FileSpreadsheetIcon } from "lucide-react";
 import { Professional } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -65,7 +65,16 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
 
   // Provide the current data for export
   const handleExport = () => {
-    onExportData(professionals);
+    if (professionals && professionals.length > 0) {
+      onExportData(professionals);
+      console.log("Exporting", professionals.length, "professionals to CSV");
+    } else {
+      toast({
+        title: "Export Failed",
+        description: "No data available to export.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
@@ -86,9 +95,9 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
 
   return (
     <section className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-200">
-      {/* Search Bar */}
-      <div className="mb-6">
-        <div className="relative">
+      {/* Search Bar and Actions */}
+      <div className="mb-6 flex justify-between">
+        <div className="relative w-full mr-4">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
           <Input
             type="text"
@@ -98,6 +107,15 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
             onChange={handleSearchChange}
           />
         </div>
+        
+        <Button 
+          variant="default" 
+          className="bg-green-600 hover:bg-green-700 text-white"
+          onClick={handleExport}
+          disabled={professionals.length === 0}
+        >
+          <FileSpreadsheetIcon className="mr-2 h-4 w-4" /> Export CSV
+        </Button>
       </div>
       
       {/* Data Table */}
