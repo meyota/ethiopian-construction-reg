@@ -149,7 +149,7 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
               <FormItem>
                 <FormLabel>Date of Registration</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input type="date" {...field} className="text-right" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -212,8 +212,7 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="construction">Construction</SelectItem>
-                    <SelectItem value="civil">Water</SelectItem>
-                    
+                    <SelectItem value="water">Water</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -72,14 +72,42 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProfessional(insertProfessional: InsertProfessional): Promise<Professional> {
-    const [professional] = await db.insert(professionals).values(insertProfessional).returning();
+    // Format fullName and professionalTitle with first letter capitalized for each word
+    const formattedData = {
+      ...insertProfessional,
+      fullName: this.capitalizeWords(insertProfessional.fullName),
+      professionalTitle: this.capitalizeWords(insertProfessional.professionalTitle)
+    };
+    
+    const [professional] = await db.insert(professionals).values(formattedData).returning();
     return professional;
+  }
+  
+  // Helper method to capitalize the first letter of each word
+  private capitalizeWords(text: string): string {
+    if (!text) return text;
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   async updateProfessional(id: number, updateData: Partial<InsertProfessional>): Promise<Professional | undefined> {
+    // Format fullName and professionalTitle if they are being updated
+    const formattedData = { ...updateData };
+    
+    if (formattedData.fullName) {
+      formattedData.fullName = this.capitalizeWords(formattedData.fullName);
+    }
+    
+    if (formattedData.professionalTitle) {
+      formattedData.professionalTitle = this.capitalizeWords(formattedData.professionalTitle);
+    }
+    
     const [professional] = await db
       .update(professionals)
-      .set(updateData)
+      .set(formattedData)
       .where(eq(professionals.id, id))
       .returning();
     

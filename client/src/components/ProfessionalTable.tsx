@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ProfessionalTableProps {
   onExportData: (professionals: Professional[]) => void;
@@ -17,6 +18,8 @@ interface ProfessionalTableProps {
 const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
+  const { user } = useAuth();
+  const isStaff = user?.isStaff || false;
   
   const { data: professionals = [], isLoading, isError } = useQuery<Professional[]>({
     queryKey: ['/api/professionals', searchTerm],
@@ -111,7 +114,7 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
               <TableHead>Sector</TableHead>
               <TableHead>Service Type</TableHead>
               <TableHead>Date of Registration</TableHead>
-              <TableHead>Actions</TableHead>
+              {isStaff && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -134,16 +137,18 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
                   <TableCell>{professional.sector}</TableCell>
                   <TableCell>{professional.serviceType}</TableCell>
                   <TableCell>{professional.dateOfRegistration}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-700">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(professional.id)} className="text-red-500 hover:text-red-700">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+                  {isStaff && (
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-700">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(professional.id)} className="text-red-500 hover:text-red-700">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             )}

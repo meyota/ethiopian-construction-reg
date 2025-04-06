@@ -3,28 +3,30 @@ import { Professional } from './types';
 export const exportToCsv = (professionals: Professional[]): void => {
   // Headers for the CSV
   const headers = [
+    'Roll No.',
     'Tracking Number',
     'Full Name',
     'Gender',
-    'Date of Registration',
     'Phone Number',
     'Professional Title',
     'Professional Number',
     'Sector',
-    'Service Type'
+    'Service Type',
+    'Date of Registration'
   ];
 
   // Convert each professional to CSV row
-  const rows = professionals.map((professional) => [
+  const rows = professionals.map((professional, index) => [
+    index + 1,
     professional.trackingNumber,
     professional.fullName,
     professional.gender,
-    professional.dateOfRegistration,
     professional.phoneNumber,
     professional.professionalTitle,
     professional.professionalNumber,
     professional.sector,
-    professional.serviceType
+    professional.serviceType,
+    professional.dateOfRegistration
   ]);
 
   // Combine headers and rows
