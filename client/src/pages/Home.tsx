@@ -54,7 +54,28 @@ const Home: FC = () => {
   };
 
   const handleExportCsv = (professionals: Professional[]) => {
-    exportToCsv(professionals);
+    if (professionals && professionals.length > 0) {
+      const result = exportToCsv(professionals);
+      if (result) {
+        toast({
+          title: "Export Successful",
+          description: `Exported ${professionals.length} professionals to CSV.`,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Export Failed",
+          description: "Failed to generate CSV file. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Export Failed",
+        description: "No data available to export.",
+        variant: "destructive",
+      });
+    }
   };
   
   const handleEdit = (professional: Professional) => {
@@ -110,11 +131,16 @@ const Home: FC = () => {
     updateProfessionalMutation.mutate(updatedProfessional);
   };
 
-  // Create a state for professionals data to export
+  // State to track professionals data and successful data loading
   const [professionalsToExport, setProfessionalsToExport] = useState<Professional[]>([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
   
   const handleProfessionalsData = (data: Professional[]) => {
-    setProfessionalsToExport(data);
+    if (data && data.length > 0) {
+      setProfessionalsToExport(data);
+      setDataLoaded(true);
+      console.log("Loaded", data.length, "professionals for potential export");
+    }
   };
   
   return (
@@ -124,7 +150,17 @@ const Home: FC = () => {
         theme={theme}
         onToggleForm={toggleForm}
         onToggleTheme={toggleTheme}
-        onExportCsv={() => handleExportCsv(professionalsToExport)}
+        onExportCsv={() => {
+          if (dataLoaded && professionalsToExport.length > 0) {
+            handleExportCsv(professionalsToExport);
+          } else {
+            toast({
+              title: "Export Failed",
+              description: "No data available to export. Please wait for data to load or add some professionals.",
+              variant: "destructive",
+            });
+          }
+        }}
       />
       
       <main className="container mx-auto p-6 space-y-6">

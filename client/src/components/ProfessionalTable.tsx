@@ -29,7 +29,12 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
       const url = term ? `/api/professionals?searchTerm=${encodeURIComponent(term as string)}` : "/api/professionals";
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch professionals");
-      return response.json();
+      const data = await response.json();
+      // Pass data to parent component for export functionality
+      if (data && data.length > 0) {
+        onExportData(data);
+      }
+      return data;
     }
   });
 
@@ -95,9 +100,9 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
 
   return (
     <section className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-200">
-      {/* Search Bar and Actions */}
-      <div className="mb-6 flex justify-between">
-        <div className="relative w-full mr-4">
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative w-full">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
           <Input
             type="text"
@@ -107,15 +112,6 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = 
             onChange={handleSearchChange}
           />
         </div>
-        
-        <Button 
-          variant="default" 
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={handleExport}
-          disabled={professionals.length === 0}
-        >
-          <FileSpreadsheetIcon className="mr-2 h-4 w-4" /> Export CSV
-        </Button>
       </div>
       
       {/* Data Table */}

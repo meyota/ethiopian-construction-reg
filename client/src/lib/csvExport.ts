@@ -1,10 +1,9 @@
 import { Professional } from './types';
 
-export const exportToCsv = (professionals: Professional[]): void => {
+export const exportToCsv = (professionals: Professional[]): boolean | void => {
   if (!professionals || professionals.length === 0) {
     console.error('No data to export');
-    alert('No data available to export.');
-    return;
+    return false;
   }
 
   try {
@@ -67,8 +66,9 @@ export const exportToCsv = (professionals: Professional[]): void => {
     }, 300);
     
     console.log(`Successfully exported ${professionals.length} records to CSV`);
+    return true;
   } catch (error) {
     console.error('Error exporting CSV:', error);
-    alert(`Error exporting CSV: ${error instanceof Error ? error.message : "Unknown error"}`);
+    return false;
   }
 };
