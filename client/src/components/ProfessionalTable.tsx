@@ -13,9 +13,10 @@ import { useAuth } from "@/hooks/use-auth";
 
 interface ProfessionalTableProps {
   onExportData: (professionals: Professional[]) => void;
+  onEdit?: (professional: Professional) => void;
 }
 
-const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
+const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData, onEdit = () => {} }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const { user } = useAuth();
@@ -140,7 +141,12 @@ const ProfessionalTable: FC<ProfessionalTableProps> = ({ onExportData }) => {
                   {isStaff && (
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-700">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={() => onEdit(professional)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(professional.id)} className="text-red-500 hover:text-red-700">

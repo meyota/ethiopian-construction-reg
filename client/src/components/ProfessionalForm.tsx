@@ -149,7 +149,13 @@ const ProfessionalForm: FC<ProfessionalFormProps> = ({ isVisible }) => {
               <FormItem>
                 <FormLabel>Date of Registration</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} className="text-right" />
+                  <div className="relative">
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      className="text-left pr-10" 
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
